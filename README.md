@@ -1,7 +1,7 @@
 # Redshift Authorizer
 
 ## Overview
-This package utilizes [AWS SSM Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) and federated authentication to Redshift via IAM to retrieve [temporary and secure Redshift credentials](https://docs.aws.amazon.com/redshift/latest/mgmt/generating-user-credentials.html) It then initiates a connection to Redshift using the [pg-promise library](https://www.npmjs.com/package/pg-promise).
+This package utilizes [AWS SSM Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) and federated authentication to Redshift via IAM to retrieve [temporary and secure Redshift credentials](https://docs.aws.amazon.com/redshift/latest/mgmt/generating-user-credentials.html). It then initiates a connection to Redshift using the [pg-promise library](https://www.npmjs.com/package/pg-promise).
 
 ## Requirements
 
