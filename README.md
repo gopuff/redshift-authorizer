@@ -12,6 +12,8 @@ This package utilizes [AWS SSM Parameter Store](https://docs.aws.amazon.com/syst
 
 ## Usage
 
+* Execute `npm run build` to transpile TypeScript into JavaScript
+
 ```javascript
 const RedshiftAuthorizer = require('../dist/redshiftAuthorizer')
 
