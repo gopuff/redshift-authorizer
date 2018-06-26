@@ -43,3 +43,8 @@ const db = RedshiftAuthorizer.getDbConnection(`/${prefix}/redshift`)
 * [AWS Param Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html)
 * [GetClusterCredentials](https://docs.aws.amazon.com/redshift/latest/APIReference/API_GetClusterCredentials.html)
 
+## Contributors
+
+* [Aaron Held](https://github.com/aheld)
+* [Bobby Kozora](https://github.com/bkozora)
+
