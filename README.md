@@ -48,3 +48,5 @@ const db = RedshiftAuthorizer.getDbConnection(`/${prefix}/redshift`)
 * [Aaron Held](https://github.com/aheld)
 * [Bobby Kozora](https://github.com/bkozora)
 
+
+![goPuff](https://s3.amazonaws.com/gopuff-content/assets/images/goPuff-logo.png "Logo Title Text 1")
