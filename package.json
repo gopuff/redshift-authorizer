@@ -1,6 +1,6 @@
 {
   "name": "redshift-authorizer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Temporary Redshift authentication using AWS Parameter Store and IAM roles",
   "main": "./dist/redshiftAuthorizer.js",
   "scripts": {
@@ -9,15 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gopuff/redshift-authorizer.git"
+    "url": "git+https://github.com/gopuff/redshift-authorizer.git"
   },
   "keywords": [
     "Redshift",
     "IAM",
     "AWS",
     "SSM",
-    "Parameter",
-    "Store"
+    "Parameter Store",
+    "pg-promise",
+    "Postgres"
   ],
   "author": "Bobby Kozora <bobby.kozora@goPuff.com> (https://goPuff.com)",
   "license": "ISC",
