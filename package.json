@@ -1,6 +1,6 @@
 {
   "name": "redshift-authorizer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Temporary Redshift authentication using AWS Parameter Store and IAM roles",
   "main": "./dist/redshiftAuthorizer.js",
   "scripts": {
@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/gopuff/redshift-authorizer/issues"
   },
-  "homepage": "https://github.com/gopuff/redshift-authorizer#readme"
+  "homepage": "https://github.com/gopuff/redshift-authorizer#readme",
+  "dependencies": {
+    "aws-sdk": "^2.268.1",
+    "pg-promise": "^8.4.5"
+  }
 }
