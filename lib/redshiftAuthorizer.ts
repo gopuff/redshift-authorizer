@@ -3,22 +3,28 @@ AWS.config.update({
   region: process.env.AWS_REGION || "us-east-1",
 });
 
+import * as fs from "fs";
 import { IDatabase, IMain } from "pg-promise";
 import * as pgPromise from "pg-promise";
 import { QueryFile } from "pg-promise";
-import { join } from "path";
 
 const pgp: IMain = pgPromise();
-
 const ssm = new AWS.SSM();
 const redshift = new AWS.Redshift();
-const allowAutoCreate = Boolean(process.env.ALLOW_CREATE || false);
+
+// Allow IAM to create a Redshift user if it doesn't already exist
+const ALLOW_CREATE = Boolean(process.env.ALLOW_CREATE || false);
+// Enable/disable debugging if ALLOW_DEBUG env var is defined, or allow it if NODE_ENV is dev
+const ALLOW_DEBUG = Boolean(process.env.ALLOW_DEBUG || process.env.NODE_ENV === "dev" ? true : false);
+
+// Cache for PG Promise queryFile
+const queryFileCache = {};
 
 function getPw(cn) {
   return new Promise((resolve, reject) => {
     redshift.getClusterCredentials(
       {
-        AutoCreate: allowAutoCreate,
+        AutoCreate: ALLOW_CREATE,
         ClusterIdentifier: cn.clusterName,
         DbName: cn.dbName,
         DbUser: cn.user,
@@ -75,19 +81,20 @@ function getDbSettings(paramPath: string) {
  */
 function getDbConnection(paramPath: string) {
   return getDbSettings(paramPath).then((cn) => {
-    return pgp(cn)
+    return pgp(cn);
   });
 }
 
-let queryFileCache = {}
-
-function getQueryFile(filename :string): QueryFile {
-  let params = {minify: true, debug: true}
-  queryFileCache[filename] = typeof queryFileCache[filename] === "undefined"
-    ? new pgp.QueryFile(join(__dirname, "..", "sql", filename), params)
-    : queryFileCache[filename]
-
-  return queryFileCache[filename]
+function getQueryFile(filename: string): QueryFile {
+  const params = {minify: true, debug: ALLOW_DEBUG};
+  if (fs.existsSync(filename)) {
+    queryFileCache[filename] = typeof queryFileCache[filename] === "undefined"
+      ? new pgp.QueryFile(filename, params)
+      : queryFileCache[filename];
+    return queryFileCache[filename];
+  } else {
+    throw new Error(`file ${filename} does not exist`);
+  }
 }
 
 export {
