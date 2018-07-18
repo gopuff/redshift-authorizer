@@ -16,25 +16,12 @@ This package utilizes [AWS SSM Parameter Store](https://docs.aws.amazon.com/syst
 const RedshiftAuthorizer = require('redshift-authorizer')
 
 // Following suggested convention, prefix environment to your parameter names
-const prefix = process.env.NODE_ENV || 'production'
+const prefix = `/${process.env.NODE_ENV || 'production'}`
 
-const db = RedshiftAuthorizer.getDbConnection(`/${prefix}/redshift`)
-.then(db => {
-  let res = typeof db.connect === 'function'
-    ? 'Passed!' : 'Failed!'
-
-  db.any('SELECT * FROM users LIMIT 1', [true])
-    .then(function (data) {
-      // Success
-      console.log('data successfully retrieved')
-    })
-    .catch(function (err) {
-      // Uh oh...
-      console.error(err)
-	  })
-  console.log(res)
-})
-
+const db = RedshiftAuthorizer.getDbConnection(`${prefix}/redshift`)
+  .then(db => db.any('SELECT usesysid FROM pg_user LIMIT 1', [true]))
+  .then(console.log)
+  .catch(console.error)
 ```
 
 ## Resources
