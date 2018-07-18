@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/gopuff/redshift-authorizer#readme",
   "dependencies": {
+    "@types/node": "^10.5.2",
     "aws-sdk": "^2.268.1",
     "pg-promise": "^8.4.5"
   }
