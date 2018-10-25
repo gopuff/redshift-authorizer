@@ -1,6 +1,6 @@
 import * as AWS from "aws-sdk";
 AWS.config.update({
-  region: process.env.AWS_REGION || "us-east-1",
+  region: process.env.AWS_REGION || "us-east-1"
 });
 
 import * as fs from "fs";
@@ -15,7 +15,9 @@ const redshift = new AWS.Redshift();
 // Allow IAM to create a Redshift user if it doesn't already exist
 const ALLOW_CREATE = Boolean(process.env.ALLOW_CREATE || false);
 // Enable/disable debugging if ALLOW_DEBUG env var is defined, or allow it if NODE_ENV is dev
-const ALLOW_DEBUG = Boolean(process.env.ALLOW_DEBUG || process.env.NODE_ENV === "dev" ? true : false);
+const ALLOW_DEBUG = Boolean(
+  process.env.ALLOW_DEBUG || process.env.NODE_ENV === "dev" ? true : false
+);
 
 // Cache for PG Promise queryFile
 const queryFileCache = {};
@@ -28,15 +30,18 @@ function getPw(cn) {
         ClusterIdentifier: cn.clusterName,
         DbName: cn.dbName,
         DbUser: cn.user,
-        DurationSeconds: 900,
+        DurationSeconds: 3600
       },
       (err, data) => {
-        if (err) { reject(err); }
+        if (err) {
+          reject(err);
+        }
         resolve(data);
-      },
+      }
     );
   }).then((creds: AWS.Redshift.ClusterCredentials) => {
     (cn.user = creds.DbUser), (cn.password = creds.DbPassword);
+    cn.expire = new Date(creds.Expiration.getTime() - 1000 * 60);
     return cn;
   });
 }
@@ -53,12 +58,12 @@ function buildCn(p) {
     password: null,
     port: extractParam("port"),
     ssl: "require",
-    user: extractParam("dataUser"),
+    user: extractParam("dataUser")
   };
   return getPw(cn);
 
   function extractParam(key) {
-    return p.Parameters.filter((x) => x.Name.endsWith(key))[0].Value;
+    return p.Parameters.filter(x => x.Name.endsWith(key))[0].Value;
   }
 }
 
@@ -75,29 +80,35 @@ function getDbSettings(paramPath: string) {
     .then(buildCn);
 }
 
+const cache = {};
 /**
  * Returns a promise for a pg-promise connection
  * @param paramPath String - the path for the params
  */
 function getDbConnection(paramPath: string) {
-  return getDbSettings(paramPath).then((cn) => {
-    return pgp(cn);
+  if (cache[paramPath] && cache[paramPath].cn.expire > new Date()) {
+    return Promise.resolve(cache[paramPath].db);
+  }
+  return getDbSettings(paramPath).then(cn => {
+    cache[paramPath] = {
+      db: pgp(cn),
+      cn
+    };
+    return cache[paramPath].db;
   });
 }
 
 function getQueryFile(filename: string): QueryFile {
-  const params = {minify: true, debug: ALLOW_DEBUG};
+  const params = { minify: true, debug: ALLOW_DEBUG };
   if (fs.existsSync(filename)) {
-    queryFileCache[filename] = typeof queryFileCache[filename] === "undefined"
-      ? new pgp.QueryFile(filename, params)
-      : queryFileCache[filename];
+    queryFileCache[filename] =
+      typeof queryFileCache[filename] === "undefined"
+        ? new pgp.QueryFile(filename, params)
+        : queryFileCache[filename];
     return queryFileCache[filename];
   } else {
     throw new Error(`file ${filename} does not exist`);
   }
 }
 
-export {
-  getDbConnection,
-  getQueryFile,
-};
+export { getDbConnection, getQueryFile };
