@@ -1,6 +1,6 @@
 {
   "name": "redshift-authorizer",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Temporary Redshift authentication using AWS Parameter Store and IAM roles",
   "main": "./dist/redshiftAuthorizer.js",
   "scripts": {
